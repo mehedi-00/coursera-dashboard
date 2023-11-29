@@ -19,7 +19,8 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import RightSidebar from '../Shared/RightSidebar/RightSidebar';
-const drawerWidth = 240;
+import { navItems } from '@/src/constant/navbar';
+const drawerWidth = 285;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
@@ -65,91 +66,119 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
   justifyContent: 'flex-end',
 }));
-const Layout = ({children}) => {
-    const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
-  
-    const handleDrawerOpen = () => {
-      setOpen(true);
-    };
-  
-    const handleDrawerClose = () => {
-      setOpen(false);
-    };
-  
-    return (
-      <Box sx={{ display: 'flex' }}>
-        <CssBaseline />
-        <AppBar position="fixed" open={open}>
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              sx={{ mr: 2, ...(open && { display: 'none' }) }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap component="div">
-              Persistent drawer
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            '& .MuiDrawer-paper': {
-              width: drawerWidth,
-              boxSizing: 'border-box',
-            },
-          }}
-          variant="persistent"
-          anchor="left"
-          open={open}
-        >
-          
-          <DrawerHeader>
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-            </IconButton>
-          </DrawerHeader>
-          <Divider />
-          <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-          <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </Drawer>
+const Layout = ({ children }) => {
+  const theme = useTheme();
+  const [open, setOpen] = React.useState(false);
 
-        <Main open={open}>
-          <DrawerHeader />
-          {children}
-          <RightSidebar/>
-        </Main>
-      </Box>
-    );
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <Box sx={{ display: 'flex',}}>
+      <CssBaseline />
+      <AppBar position="fixed" open={open}>
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            sx={{ mr: 2, ...(open && { display: 'none' }) }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap component="div">
+            Persistent drawer
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: drawerWidth,
+            boxSizing: 'border-box',
+          },
+        }}
+        variant="persistent"
+        anchor="left"
+        open={open}
+      >
+
+        <DrawerHeader className='bg-black'>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'ltr' ? <ChevronLeftIcon className='text-white' /> : <ChevronRightIcon />}
+          </IconButton>
+        </DrawerHeader>
+        <Divider/>
+        {/* navbar section */}
+        <div className='absolute mt-2'>
+          <div className='flex items-center gap-1'>
+            <img className='w-12 h-12' src="https://i.postimg.cc/Y0Fsh5Fb/dashboard-logo.png" alt="logo" />
+            <h3 className='text-lg text-white'>React</h3>
+            <h3 className='text-lg text-white'>Typescript</h3>
+          </div>
+        </div>
+        <List>
+
+          {/* profile section */}
+          <div className='mt-5 flex flex-col items-center'>
+            <img className='rounded-full h-24 w-24' src="https://i.postimg.cc/28bzxyQK/profile.jpg" alt="" />
+            <h3>Abbott Keitch</h3>
+            <p>admin@fusetheme.com</p>
+          </div>
+
+          {/* first 4 service items */}
+          <div className='mt-12 mb-2 ms-4'>
+            <h1 className='text-lg text-blue-500'>DASHBOARDS</h1>
+            <p className='text-sm'>Unique dashboard designs</p>
+          </div>
+          {['Project', 'Analytics', 'Finance', 'Crypto'].map((text, index) => (
+            <ListItem key={text} disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+        <Divider />
+        <List>
+          {/* first 4 service items */}
+          <div className='mt-6 mb-2 ms-4'>
+            <h1 className='text-lg text-blue-500'>APPLICATIONS</h1>
+            <p className='text-sm'>Custom made application designs</p>
+          </div>
+          {navItems.map((item, index) => (
+            <ListItem key={index} disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  {
+                    item.icon
+                  }
+                </ListItemIcon>
+                <ListItemText primary={item.label} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
+
+      <Main open={open}>
+        <DrawerHeader />
+        {children}
+        <RightSidebar />
+      </Main>
+    </Box>
+  );
 };
 
 export default Layout;
