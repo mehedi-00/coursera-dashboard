@@ -65,6 +65,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
   justifyContent: 'flex-end',
 }));
+
 const Layout = ({children}) => {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
