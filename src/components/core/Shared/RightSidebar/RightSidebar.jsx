@@ -1,7 +1,10 @@
+
 import { user } from "@/src/constant/user";
 // icon
-import MenuOpenIcon from '@mui/icons-material/MenuOpen';
+
+import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import CloseIcon from '@mui/icons-material/Close';
+import TextsmsOutlinedIcon from '@mui/icons-material/TextsmsOutlined';
 import { useState } from "react";
 
 
@@ -10,49 +13,67 @@ import { useState } from "react";
 const RightSidebar = () => {
 
     const [open, setOpen] = useState(false)
-    if(open === false){
-        console.log('right-65')
-    }else{
-        console.log('right-100')
-    }
+    const [userIndex, setUserIndex] = useState(-1)
+    console.log(userIndex)
 
 
 
     return (
-    <div className={`fixed top-0 bg-pink-100 bottom-0 w-[20%] ${open ? 'right-0' : '-right-56'} duration-700`} style={{zIndex: 9999900}}>
-    <div className="flex bg-slate-400 justify-between">
+    <div className={`fixed top-0 bg-white bottom-0 w-[22%] ${open ? 'right-0' : '-right-60'} duration-700`} style={{zIndex: 9999900}}>
+    <div className="flex bg-black justify-between items-center h-16">
         {/* open button start */}
-        <div>
-            <span onClick={() => setOpen(!open)}>
-        <MenuOpenIcon className={`w-10 h-10 ${open ? '' : 'block'}`}></MenuOpenIcon>
-            </span>
+        <div className="p-3">
+            {
+                userIndex === -1 ?
+                <span onClick={() => setOpen(!open)}><ForumOutlinedIcon className={`w-7 h-7 ${open ? '' : 'block'}`}></ForumOutlinedIcon>
+                </span>
+                : <span>
+                    <img className="w-10 h-10 rounded-full object-cover"  title={user[userIndex].name} src={user[userIndex].image}/>
+                </span>
+            }
         </div>
         {/* open button end */}
         {/* close button start */}
-        <div className="flex justify-between w-full items-center">
+        <div className="flex justify-around w-full items-center">
             {/* userInfo */}
             <div>
-                <h1>SohanWebdevctg</h1>
+            {
+                userIndex === -1 ?
+                <span>
+                    <h1 className="text-white">Team Chat</h1>
+                </span>
+                : <span>
+                    <h1 className="text-white">{user[userIndex].name}</h1>
+                </span>
+            }
             </div>
             {/* userInfo */}
             {/* close button */}
             <div onClick={() => setOpen(!open)}>
-            <CloseIcon className={`w-10 h-10 ${open ? 'block' : ''}`}></CloseIcon>
+            <CloseIcon className={`w-7 h-7 ${open ? 'block' : ''}`}></CloseIcon>
             </div>
             {/* close button */}
         </div>
         {/* close button end */}
     </div>
     <div className="flex gap-1">
-        <div className="flex-none h-screen overflow-scroll">
-        {user.map((list, index) => (<img key={index} className="w-12 h-12 rounded-full my-3 object-cover" title={list.name} src={list.image}></img>
+        <div className="flex-none bar">
+        {user.map((list, index) => (<img key={index} className={`w-10 h-10 rounded-full my-4 mx-3 object-cover ${userIndex ? '' : 'border-r-2 border-red-500'}`} onClick={() => setUserIndex(index)}  title={list.name} src={list.image}></img>
         ))}
-        
-        
         </div>
-        <div className="flex-1 w-32">
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aperiam placeat distinctio doloribus atque ullam! Aspernatur quam accusamus architecto magni fuga, consectetur enim quaerat veritatis quas exercitationem dicta eveniet vero facilis consequuntur reprehenderit perferendis dolorem libero at eius. Placeat voluptates vero reiciendis? Totam temporibus adipisci, inventore eius eveniet aliquam enim vel itaque odio! Eum quam beatae modi doloribus voluptatem quis delectus reprehenderit nemo earum ex accusantium magnam repellendus iste sit optio quo excepturi necessitatibus eos, temporibus repellat cupiditate tempore molestias. Quo fugit iure eum facere sunt totam accusamus id vero voluptas. Possimus ex doloribus error eveniet libero praesentium adipisci quisquam non?</p>
-            {/* message */}
+        <div className="flex-1 w-32 text-black">
+            {/* message start */}
+            {
+                userIndex === -1 ? 
+                <div className="h-screen flex justify-center items-center">
+                    <div className="text-center">
+                        <TextsmsOutlinedIcon className="w-32 h-32"></TextsmsOutlinedIcon>
+                        <p>Select a contact to start a conversation</p>
+                    </div>
+                </div> 
+                : <span>yes data</span>
+            }
+            {/* message end */}
         </div>
     </div>
     </div>
