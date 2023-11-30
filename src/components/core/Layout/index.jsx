@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { styled, useTheme } from '@mui/material/styles';
+import { styled, useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -16,11 +16,21 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import RightSidebar from '../Shared/RightSidebar/RightSidebar';
 import { navItems } from '@/src/constant/navbar';
-const drawerWidth = 285;
+import { Collapse } from '@mui/material';
+
+const drawerWidth = 300;
+
+// Define your light theme
+const lightTheme = createTheme();
+
+// Define your dark theme
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
@@ -62,13 +72,28 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
   justifyContent: 'flex-end',
 }));
+
+const ScrollableDrawer = styled(Drawer)({
+  '& .MuiDrawer-paper': {
+    overflowY: 'auto',
+    scrollbarWidth: 'thin', // Firefox
+    '&::-webkit-scrollbar': {
+      width: '5px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: 'gray', // Change the color as needed
+    },
+  },
+});
+
+
 const Layout = ({ children }) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [openSubMenu, setOpenSubMenu] = React.useState([]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -78,106 +103,235 @@ const Layout = ({ children }) => {
     setOpen(false);
   };
 
+  const handleSubMenuClick = (index) => {
+    setOpenSubMenu((prev) => {
+      const updatedState = [...prev];
+      updatedState[index] = !updatedState[index];
+      return updatedState;
+    });
+  };
+
+
   return (
-    <Box sx={{ display: 'flex',}}>
-      <CssBaseline />
-      <AppBar position="fixed" open={open}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{ mr: 2, ...(open && { display: 'none' }) }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Persistent drawer
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
+    <ThemeProvider theme={darkTheme}>
+      <Box sx={{ display: 'flex' }}>
+        <CssBaseline />
+        <AppBar position="fixed" open={open}>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{ mr: 2, ...(open && { display: 'none' }) }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap component="div">
+              Persistent drawer
+            </Typography>
+          </Toolbar>
+        </AppBar>
+
+        <ScrollableDrawer
+          sx={{
             width: drawerWidth,
-            boxSizing: 'border-box',
-          },
-        }}
-        variant="persistent"
-        anchor="left"
-        open={open}
-      >
-
-        <DrawerHeader className='bg-black'>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon className='text-white' /> : <ChevronRightIcon />}
-          </IconButton>
-        </DrawerHeader>
-        <Divider/>
-        {/* navbar section */}
-        <div className='absolute mt-2'>
-          <div className='flex items-center gap-1'>
-            <img className='w-12 h-12' src="https://i.postimg.cc/Y0Fsh5Fb/dashboard-logo.png" alt="logo" />
-            <h3 className='text-lg text-white'>React</h3>
-            <h3 className='text-lg text-white'>Typescript</h3>
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: drawerWidth,
+              boxSizing: 'border-box',
+            },
+          }}
+          variant="persistent"
+          anchor="left"
+          open={open}
+        >
+          <DrawerHeader className='bg-black'>
+            <IconButton onClick={handleDrawerClose}>
+              {theme.direction === 'ltr' ? <ChevronLeftIcon className='text-white' /> : <ChevronRightIcon />}
+            </IconButton>
+          </DrawerHeader>
+          <Divider />
+          <div className='absolute mt-2'>
+            <div className='flex items-center gap-1'>
+              <img className='w-12 h-12' src="https://i.postimg.cc/Y0Fsh5Fb/dashboard-logo.png" alt="logo" />
+              <h3 className='text-lg text-white'>React</h3>
+              <h3 className='text-lg text-white'>Typescript</h3>
+            </div>
           </div>
-        </div>
-        <List>
+          <List className='text-gray-400'>
+            <div className='mt-5 flex flex-col items-center'>
+              <img className='rounded-full h-24 w-24' src="https://i.postimg.cc/28bzxyQK/profile.jpg" alt="" />
+              <h3>Abbott Keitch</h3>
+              <p className='text-xs'>admin@fusetheme.com</p>
+            </div>
 
-          {/* profile section */}
-          <div className='mt-5 flex flex-col items-center'>
-            <img className='rounded-full h-24 w-24' src="https://i.postimg.cc/28bzxyQK/profile.jpg" alt="" />
-            <h3>Abbott Keitch</h3>
-            <p>admin@fusetheme.com</p>
-          </div>
+            {/* Dashboard start */}
+            <div className='mt-12 mb-2 ms-4'>
+              <h1 className='text-sm text-blue-500'>DASHBOARDS</h1>
+              <p className='text-xs'>Unique dashboard designs</p>
+            </div>
+            {navItems.slice(0, 4).map((item, index) => (
+              <ListItem key={index} disablePadding>
+                <ListItemButton>
+                  <ListItemIcon className='text-gray-400' onClick={() => handleSubMenuClick(index)}>
+                    {
+                      item.icon
+                    }
+                  </ListItemIcon>
+                  <ListItemText primary={item.label} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+            {/* Dashboard End */}
 
-          {/* first 4 service items */}
-          <div className='mt-12 mb-2 ms-4'>
-            <h1 className='text-lg text-blue-500'>DASHBOARDS</h1>
-            <p className='text-sm'>Unique dashboard designs</p>
-          </div>
-          {['Project', 'Analytics', 'Finance', 'Crypto'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {/* first 4 service items */}
-          <div className='mt-6 mb-2 ms-4'>
-            <h1 className='text-lg text-blue-500'>APPLICATIONS</h1>
-            <p className='text-sm'>Custom made application designs</p>
-          </div>
-          {navItems.map((item, index) => (
-            <ListItem key={index} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {
-                    item.icon
-                  }
-                </ListItemIcon>
-                <ListItemText primary={item.label} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
+          </List>
+          <Divider />
 
-      <Main open={open}>
-        <DrawerHeader />
-        {children}
-        <RightSidebar />
-      </Main>
-    </Box>
+          {/* Application start */}
+          <List className='text-gray-400'>
+            <div className='mt-6 mb-2 ms-4'>
+              <h1 className='text-sm text-blue-500'>APPLICATIONS</h1>
+              <p className='text-xs'>Custom made application designs</p>
+            </div>
+            {navItems.slice(4, 16).map((item, index) => (
+              <div key={index}>
+                <ListItem className='text-gray-400' disablePadding>
+                  <ListItemButton onClick={() => handleSubMenuClick(index)}>
+                    <ListItemIcon className='text-gray-400'>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText primary={item.label} />
+                    {item.subMenu && (
+                      <IconButton
+                        size="small"
+                        sx={{ marginLeft: 'auto', transform: openSubMenu[index] ? 'rotate(90deg)' : 'none' }}
+                      >
+                        <ChevronRightIcon />
+                      </IconButton>
+                    )}
+                  </ListItemButton>
+                </ListItem>
+                {item.subMenu && (
+                  <Collapse in={openSubMenu[index]} timeout="auto" unmountOnExit>
+                    <List className='text-gray-400' component="div" disablePadding>
+                      {item.subMenu.map((subItem, subIndex) => (
+                        <ListItem key={subIndex} disablePadding>
+                          <ListItemButton>
+                            <ListItemIcon>
+                              {subItem.icon}
+                            </ListItemIcon>
+                            <ListItemText primary={subItem.label} />
+                          </ListItemButton>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Collapse>
+                )}
+              </div>
+            ))}
+          </List>
+          {/* Application End */}
+
+          {/* Pages Start */}
+          <List className='text-gray-400'>
+            <div className='mt-6 mb-2 ms-4'>
+              <h1 className='text-sm text-blue-500'>PAGES</h1>
+              <p className='text-xs'>Custom made application designs</p>
+            </div>
+            {navItems.slice(16, 24).map((item, index) => (
+              <div key={index}>
+                <ListItem disablePadding>
+                  <ListItemButton onClick={() => handleSubMenuClick(index)}>
+                    <ListItemIcon className='text-gray-400'>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText primary={item.label} />
+                    {item.subMenu && (
+                      <IconButton
+                        size="small"
+                        sx={{ marginLeft: 'auto', transform: openSubMenu[index] ? 'rotate(90deg)' : 'none' }}
+                      >
+                        <ChevronRightIcon />
+                      </IconButton>
+                    )}
+                  </ListItemButton>
+                </ListItem>
+                {item.subMenu && (
+                  <Collapse in={openSubMenu[index]} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      {item.subMenu.map((subItem, subIndex) => (
+                        <ListItem key={subIndex} disablePadding>
+                          <ListItemButton>
+                            <ListItemIcon>
+                              {subItem.icon}
+                            </ListItemIcon>
+                            <ListItemText primary={subItem.label} />
+                          </ListItemButton>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Collapse>
+                )}
+              </div>
+            ))}
+          </List>
+          {/* Pages End */}
+
+          {/* user interface */}
+          <List className='text-gray-400'>
+            <div className='mt-6 mb-2 ms-4'>
+              <h1 className='text-sm text-blue-500'>USER INTERFACE</h1>
+              <p className='text-xs'>Building blocks of the UI & UX</p>
+            </div>
+            {navItems.slice(24,28).map((item, index) => (
+              <div key={index}>
+                <ListItem disablePadding>
+                  <ListItemButton onClick={() => handleSubMenuClick(index)}>
+                    <ListItemIcon className='text-gray-400'>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText primary={item.label} />
+                    {item.subMenu && (
+                      <IconButton
+                        size="small"
+                        sx={{ marginLeft: 'auto', transform: openSubMenu[index] ? 'rotate(90deg)' : 'none' }}
+                      >
+                        <ChevronRightIcon />
+                      </IconButton>
+                    )}
+                  </ListItemButton>
+                </ListItem>
+                {item.subMenu && (
+                  <Collapse in={openSubMenu[index]} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      {item.subMenu.map((subItem, subIndex) => (
+                        <ListItem key={subIndex} disablePadding>
+                          <ListItemButton>
+                            <ListItemIcon>
+                              {subItem.icon}
+                            </ListItemIcon>
+                            <ListItemText primary={subItem.label} />
+                          </ListItemButton>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Collapse>
+                )}
+              </div>
+            ))}
+          </List>
+
+
+        </ScrollableDrawer>
+
+        <Main open={open}>
+          <DrawerHeader />
+          {children}
+          <RightSidebar />
+        </Main>
+      </Box>
+    </ThemeProvider>
   );
 };
 
