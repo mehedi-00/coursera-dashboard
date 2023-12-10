@@ -19,6 +19,7 @@ import ListItemText from '@mui/material/ListItemText';
 import RightSidebar from '../Shared/RightSidebar/RightSidebar';
 import { navItems } from '@/src/constant/navbar';
 import { Collapse } from '@mui/material';
+import Link from 'next/link';
 
 const drawerWidth = 300;
 
@@ -221,7 +222,7 @@ const Layout = ({ children }) => {
                             <ListItemIcon>
                               {subItem.icon}
                             </ListItemIcon>
-                            <ListItemText primary={subItem.label} />
+                            <Link href={subItem.path}>{subItem.label}</Link>
                           </ListItemButton>
                         </ListItem>
                       ))}

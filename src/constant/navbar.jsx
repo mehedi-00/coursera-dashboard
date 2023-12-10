@@ -64,7 +64,7 @@ export const navItems = [
                },
                {
                     label: "new product",
-                    path : '/newProduct'
+                    path : '/ecommerce/new-product'
                },
                {
                     label: "product detail",
